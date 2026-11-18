@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Word packs — Noky Keyboard</title>
+    <meta name="description" content="Offline dictionaries with next-word prediction for Noky Keyboard. Download and open on Android.">
+    <meta name="theme-color" content="#F4F0FF">
+    <link rel="canonical" href="https://noky.allstudio.app/word-packs.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Noky Keyboard">
+    <meta property="og:title" content="Word packs — Noky Keyboard">
+    <meta property="og:description" content="Offline dictionaries with next-word prediction for Noky Keyboard. Download and open on Android.">
+    <meta property="og:url" content="https://noky.allstudio.app/word-packs.html">
+    <meta property="og:image" content="https://noky.allstudio.app/icon.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icon subset for the page itself (see README → Icons). Keyboard previews fetch their own icons on demand. -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0&icon_names=add,add_circle,arrow_forward,attach_file,auto_awesome,back_hand,block,bolt,check_circle,chevron_right,close,cloud_off,dashboard_customize,delete_sweep,dialpad,download,download_done,edit_note,error,expand_more,explore,fact_check,favorite,fingerprint,function,gpp_maybe,heart_minus,hexagon,horizontal_rule,info,ios_share,keyboard,link,lock,mail,menu_book,new_releases,palette,psychology,publish,rocket_launch,search,search_off,settings,share_off,shield,shield_lock,sort,swap_horiz,task_alt,terminal,upload_file,verified,verified_user,visibility,warning,workspace_premium&display=block" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="word-packs">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="backdrop-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <header class="topbar">
+        <div class="container topbar-row">
+            <a href="./" class="brand" aria-label="Noky home">
+                <img src="./icon-192.png" alt="" class="brand-icon" width="36" height="36">
+                <span class="wordmark">Nok<span class="y">y</span></span>
+            </a>
+            <nav class="topnav" aria-label="Main">
+                <a href="./">Discover</a>
+                <a href="./keyboards.html">Keyboards</a>
+                <a href="./word-packs.html" aria-current="page">Word packs</a>
+                <a href="./create.html" class="nav-create"><span class="material-symbols-rounded" aria-hidden="true">add</span>Create</a>
+            </nav>
+            <label class="search">
+                <span class="material-symbols-rounded" aria-hidden="true">search</span>
+                <input type="search" id="kbdSearchInput" placeholder="Search keyboards" aria-label="Search keyboards" autocomplete="off" enterkeyhint="search">
+                <kbd class="slash" aria-hidden="true">/</kbd>
+            </label>
+            <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer" class="btn btn-ink btn-sm get-app">
+                Get the app
+            </a>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="page-head">
+            <div class="container page-head-row">
+                <span class="squircle lg c-blue"><span class="material-symbols-rounded filled">menu_book</span></span>
+                <div>
+                    <h1>Word packs</h1>
+                    <p>Offline dictionaries with next-word prediction. Compiled on your phone, never sent anywhere.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="dictionaries">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <h2>All word packs</h2>
+                        <p>Languages plus developer and gaming vocabularies</p>
+                    </div>
+                    
+                </div>
+                <div class="chips" id="dictCategoryPills" role="tablist" aria-label="Dictionary categories">
+                    <button type="button" class="chip active" data-dict-cat="ALL">All</button>
+                    <button type="button" class="chip" data-dict-cat="LANGUAGE">Languages</button>
+                    <button type="button" class="chip" data-dict-cat="SPECIALTY">Developer &amp; gaming</button>
+                </div>
+                <div id="dictionariesGrid" class="dict-grid" aria-live="polite"></div>
+                <div id="dictionariesGrid" class="dict-grid" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- How to install -->
+        <section class="section">
+            <div class="container">
+                <div class="steps">
+                    <div class="step"><span class="step-n">1</span><strong>Install Noky</strong><span>Get the app from Google Play and enable it as your keyboard.</span></div>
+                    <div class="step"><span class="step-n">2</span><strong>Download a package</strong><span>Pick a <code>.nokydict</code> word pack from this page.</span></div>
+                    <div class="step"><span class="step-n">3</span><strong>Open it</strong><span>Tap the file and Noky installs it.</span></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="./" class="brand small"><img src="./icon-192.png" alt="" width="24" height="24"><span class="wordmark">Nok<span class="y">y</span></span></a>
+                <p>Keyboards and word packs for Noky Keyboard, made by <a href="https://allstudio.app">ALLStudio</a>.</p>
+            </div>
+            <nav class="footer-col" aria-label="Browse">
+                <strong>Browse</strong>
+                <a href="./">Discover</a>
+                <a href="./keyboards.html">Keyboards</a>
+                <a href="./word-packs.html">Word packs</a>
+            </nav>
+            <nav class="footer-col" aria-label="Create">
+                <strong>Create</strong>
+                <a href="./create.html">Publish a keyboard</a>
+                <a href="./create.html#request">Request a layout</a>
+                <a href="https://github.com/alllifelevel/noky" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
+            <nav class="footer-col" aria-label="Noky">
+                <strong>Noky</strong>
+                <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer">Google Play</a>
+                <a href="./privacy-policy.html">Privacy</a>
+                <a href="https://allstudio.app">ALLStudio</a>
+            </nav>
+        </div>
+    </footer>
+
+    <nav class="tabbar" aria-label="Main">
+        <a href="./"><span class="material-symbols-rounded" aria-hidden="true">explore</span><span>Discover</span></a>
+        <a href="./keyboards.html"><span class="material-symbols-rounded" aria-hidden="true">keyboard</span><span>Keyboards</span></a>
+        <a href="./word-packs.html" aria-current="page"><span class="material-symbols-rounded filled" aria-hidden="true">menu_book</span><span>Word packs</span></a>
+        <a href="./create.html"><span class="material-symbols-rounded" aria-hidden="true">add_circle</span><span>Create</span></a>
+    </nav>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="./config.js" defer></script>
+    <script src="./stats.js" defer></script>
+    <script src="./key-icons.js" defer></script>
+    <script src="./renderer.js" defer></script>
+    <script src="./app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Noky Keyboard — Hacker &amp; Custom Keyboard for Android</title>
+    <meta name="description" content="Try custom keyboards for Noky Keyboard live in your browser, then install them on Android. Private, ad-free and offline.">
+    <script>
+        // Old one-page links (including the one inside the Noky app) → their new pages.
+        (function () {
+            var to = { keyboards: "./keyboards.html", dictionaries: "./word-packs.html", create: "./create.html", publish: "./create.html#publish", request: "./create.html#request" }[location.hash.slice(1)];
+            if (to) location.replace(to);
+        })();
+    </script>
+    <meta name="theme-color" content="#F4F0FF">
+    <link rel="canonical" href="https://noky.allstudio.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Noky Keyboard">
+    <meta property="og:title" content="Noky Keyboard — Hacker &amp; Custom Keyboard for Android">
+    <meta property="og:description" content="Try custom keyboards for Noky Keyboard live in your browser, then install them on Android. Private, ad-free and offline.">
+    <meta property="og:url" content="https://noky.allstudio.app/">
+    <meta property="og:image" content="https://noky.allstudio.app/icon.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icon subset for the page itself (see README → Icons). Keyboard previews fetch their own icons on demand. -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0&icon_names=add,add_circle,arrow_forward,attach_file,auto_awesome,back_hand,block,bolt,check_circle,chevron_right,close,cloud_off,dashboard_customize,delete_sweep,dialpad,download,download_done,edit_note,error,expand_more,explore,fact_check,favorite,fingerprint,function,gpp_maybe,heart_minus,hexagon,horizontal_rule,info,ios_share,keyboard,link,lock,mail,menu_book,new_releases,palette,psychology,publish,rocket_launch,search,search_off,settings,share_off,shield,shield_lock,sort,swap_horiz,task_alt,terminal,upload_file,verified,verified_user,visibility,warning,workspace_premium&display=block" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="home">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="backdrop-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <header class="topbar">
+        <div class="container topbar-row">
+            <a href="./" class="brand" aria-label="Noky home">
+                <img src="./icon-192.png" alt="" class="brand-icon" width="36" height="36">
+                <span class="wordmark">Nok<span class="y">y</span></span>
+            </a>
+            <nav class="topnav" aria-label="Main">
+                <a href="./" aria-current="page">Discover</a>
+                <a href="./keyboards.html">Keyboards</a>
+                <a href="./word-packs.html">Word packs</a>
+                <a href="./create.html" class="nav-create"><span class="material-symbols-rounded" aria-hidden="true">add</span>Create</a>
+            </nav>
+            <label class="search">
+                <span class="material-symbols-rounded" aria-hidden="true">search</span>
+                <input type="search" id="kbdSearchInput" placeholder="Search keyboards" aria-label="Search keyboards" autocomplete="off" enterkeyhint="search">
+                <kbd class="slash" aria-hidden="true">/</kbd>
+            </label>
+            <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer" class="btn btn-ink btn-sm get-app">
+                Get the app
+            </a>
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- App listing hero -->
+        <section class="hero">
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <div class="listing-head">
+                        <img src="./icon-192.png" alt="Noky Keyboard app icon" class="app-icon" width="88" height="88">
+                        <div>
+                            <h1 class="wordmark xl">Nok<span class="y">y</span></h1>
+                            <p class="app-name">Keyboard: Hacker &amp; Custom</p>
+                            <p class="dev"><a href="https://allstudio.app">ALLStudio</a> · Tools · Free</p>
+                        </div>
+                    </div>
+                    <p class="hero-tagline">Build your own keyboard.</p>
+                    <p class="hero-sub">A modular keyboard engine for power users and developers. A full PC keyboard with Ctrl, Alt and Fn for terminals, a minimalist T9 pad, or a layout you design from scratch. Private, ad-free and offline.</p>
+
+                    <div class="stat-strip" role="list">
+                        <div class="stat" role="listitem"><strong>10K+</strong><span>Downloads</span></div>
+                        <div class="stat" role="listitem"><strong>3+</strong><span>Rated for</span></div>
+                        <div class="stat" role="listitem"><strong>No ads</strong><span>Ever</span></div>
+                        <div class="stat" role="listitem"><strong>Offline</strong><span>No tracking</span></div>
+                    </div>
+
+                    <div class="hero-cta">
+                        <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer" class="btn btn-ink btn-lg">
+                            <svg class="play-glyph" viewBox="0 0 24 24" aria-hidden="true"><path fill="#34D399" d="M3.6 2.2 13.4 12l-9.8 9.8c-.4-.2-.6-.6-.6-1.1V3.3c0-.5.2-.9.6-1.1z"/><path fill="#60A5FA" d="m16.7 8.7-3.3 3.3-9.8-9.8c.3-.2.8-.2 1.2 0l11.9 6.5z"/><path fill="#F472B6" d="m16.7 15.3-11.9 6.5c-.4.2-.9.2-1.2 0l9.8-9.8 3.3 3.3z"/><path fill="#FBBF24" d="m20.4 13.3-3.7 2-3.3-3.3 3.3-3.3 3.7 2c.9.5.9 2.1 0 2.6z"/></svg>
+                            <span class="stack"><small>Get it on</small>Google Play</span>
+                        </a>
+                        <a href="./keyboards.html" class="btn btn-soft btn-lg">Browse keyboards</a>
+                    </div>
+                </div>
+
+                <div class="hero-art" aria-hidden="true">
+                    <div class="kb-stack">
+                        <div class="mini-kb theme-blue" data-mini></div>
+                        <div class="mini-kb theme-pink" data-mini></div>
+                        <div class="mini-kb theme-dark" data-mini></div>
+                        <div class="mini-kb theme-light" data-mini></div>
+                    </div>
+                    <div class="tile3d t-term"><span class="mono">&gt;_</span></div>
+                    <div class="tile3d t-code"><span class="mono">&lt;/&gt;</span></div>
+                    <div class="tile3d t-gear"><span class="material-symbols-rounded filled">settings</span></div>
+                    <div class="tile3d t-shield"><span class="material-symbols-rounded filled">verified_user</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Highlights -->
+        <section class="container highlights" aria-label="Highlights">
+            <div class="hl"><span class="squircle c-ink"><span class="mono">&gt;_</span></span><div><strong>Hacker PC keyboard</strong><span>Esc, Ctrl, Alt, Fn, arrows</span></div></div>
+            <div class="hl"><span class="squircle c-purple"><span class="material-symbols-rounded filled">dashboard_customize</span></span><div><strong>Layout Manager</strong><span>Keys, layers, actions</span></div></div>
+            <div class="hl"><span class="squircle c-blue"><span class="material-symbols-rounded filled">swap_horiz</span></span><div><strong>Per-app auto switch</strong><span>By app and orientation</span></div></div>
+            <div class="hl"><span class="squircle c-pink"><span class="material-symbols-rounded filled">fingerprint</span></span><div><strong>Secure clipboard</strong><span>Biometric vault</span></div></div>
+            <div class="hl"><span class="squircle c-green"><span class="material-symbols-rounded filled">shield</span></span><div><strong>100% private</strong><span>No ads, no trackers</span></div></div>
+        </section>
+
+        <!-- Featured -->
+        <section class="section" aria-labelledby="featuredTitle">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <h2 id="featuredTitle">Editors' picks</h2>
+                        <p>Hand-built layouts from the ALLStudio team</p>
+                    </div>
+                    <a class="see-all" href="./keyboards.html">See all<span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></a>
+                </div>
+                <div id="featuredRail" class="featured-rail"></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <h2>Popular right now</h2>
+                        <p>What people are downloading and liking</p>
+                    </div>
+                    <a class="see-all" href="./keyboards.html">See all<span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></a>
+                </div>
+                <div id="popularGrid" class="kbd-grid compact"></div>
+            </div>
+        </section>
+
+        <!-- Create banner -->
+        <section class="section">
+            <div class="container">
+                <a href="./create.html" class="create-banner">
+                    <div class="cb-art" aria-hidden="true">
+                        <span class="tile3d mini t-code"><span class="mono">&lt;/&gt;</span></span>
+                        <span class="tile3d mini t-gear"><span class="material-symbols-rounded filled">add</span></span>
+                    </div>
+                    <div class="cb-copy">
+                        <span class="eyebrow">For creators</span>
+                        <h2>Made a keyboard you love? Publish it.</h2>
+                        <p>Export it from Noky as a <code>.nokyboard</code>, check it here in seconds, and send it to the catalog. Anyone can then try it live and install it.</p>
+                    </div>
+                    <span class="btn btn-ink">Start publishing<span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></span>
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <h2>Word packs</h2>
+                        <p>Offline dictionaries with next-word prediction</p>
+                    </div>
+                    <a class="see-all" href="./word-packs.html">See all<span class="material-symbols-rounded" aria-hidden="true">chevron_right</span></a>
+                </div>
+                <div id="dictionariesGrid" class="dict-grid" data-limit="4"></div>
+            </div>
+        </section>
+
+        <!-- About this app -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-head">
+                    <div>
+                        <h2>About this app</h2>
+                        <p>Everything inside Noky Keyboard</p>
+                    </div>
+                </div>
+                <div class="about-grid">
+                    <div class="features">
+                        <article class="feat">
+                            <span class="squircle c-purple"><span class="material-symbols-rounded filled">dashboard_customize</span></span>
+                            <h3>Build your own keyboard</h3>
+                            <p>Place keys, assign layers, define key actions and adjust depth. Import and export <code>.nokyboard</code> files to share layouts.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-ink"><span class="mono">&gt;_</span></span>
+                            <h3>Presets included</h3>
+                            <p>Hacker PC keyboard, Programmer &amp; Code pad, T9 phone pad, Gamepad, Giant 4-button pad and multi-language layouts.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-blue"><span class="material-symbols-rounded filled">swap_horiz</span></span>
+                            <h3>Per-app auto switch</h3>
+                            <p>Hacker keyboard in Termux, QWERTY in chat apps. Separate layouts for portrait and landscape.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-pink"><span class="material-symbols-rounded filled">palette</span></span>
+                            <h3>Deep styling</h3>
+                            <p>Custom fonts and sizes, corner radius, padding, shadows, glass-like opacity, Material themes, AMOLED dark or any hex accent.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-green"><span class="material-symbols-rounded filled">fingerprint</span></span>
+                            <h3>Biometric clipboard</h3>
+                            <p>Folders for your clips and a secure vault, encrypted at rest and unlocked with fingerprint, face or PIN. Auto-clear timers.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-amber"><span class="material-symbols-rounded filled">dialpad</span></span>
+                            <h3>Scenario layers</h3>
+                            <p>Phone fields bring up a dial pad, number fields a number pad. Try it all in the built-in typing sandbox.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-purple"><span class="material-symbols-rounded filled">horizontal_rule</span></span>
+                            <h3>No-keyboard strap</h3>
+                            <p>Swap the keys for an ultra-thin toolbar when you use a hardware keyboard or want the whole screen.</p>
+                        </article>
+                        <article class="feat">
+                            <span class="squircle c-blue"><span class="material-symbols-rounded filled">psychology</span></span>
+                            <h3>Typing intelligence</h3>
+                            <p>Typo correction and next-word prediction that learn on your device. Haptics and key sounds you can tune.</p>
+                        </article>
+                    </div>
+
+                    <aside class="side-cards">
+                        <div class="card side">
+                            <h3><span class="squircle sm c-pink"><span class="material-symbols-rounded filled">new_releases</span></span>What's new in 2.0</h3>
+                            <ul class="ticks">
+                                <li>Layout Manager with <code>.nokyboard</code> import and export</li>
+                                <li>Per-app and per-orientation auto switch</li>
+                                <li>Biometric secure clipboard vault</li>
+                                <li>Custom fonts, key sizing, shadows and glass styles</li>
+                                <li>Scenario layers for phone and number fields</li>
+                                <li>AES-256-GCM encrypted <code>.noky</code> backup</li>
+                            </ul>
+                        </div>
+                        <div class="card side">
+                            <h3><span class="squircle sm c-green"><span class="material-symbols-rounded filled">verified_user</span></span>Data safety</h3>
+                            <div class="safety-line"><span class="material-symbols-rounded">share_off</span><div><strong>No data shared</strong><span>Nothing goes to third parties</span></div></div>
+                            <div class="safety-line"><span class="material-symbols-rounded">cloud_off</span><div><strong>No data collected</strong><span>Your keystrokes stay on your phone</span></div></div>
+                            <div class="safety-line"><span class="material-symbols-rounded">lock</span><div><strong>Encrypted backups</strong><span>One password-protected <code>.noky</code> file</span></div></div>
+                            <a href="./privacy-policy.html" class="btn btn-ghost btn-sm">Privacy policy</a>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Keyboard details sheet -->
+    <div id="previewModalBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" hidden>
+        <div class="sheet">
+            <button type="button" id="closePreviewModalBtn" class="icon-btn sheet-close" aria-label="Close">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+
+            <div class="sheet-head">
+                <span id="previewModalIcon" class="squircle lg c-purple"><span class="material-symbols-rounded filled">keyboard</span></span>
+                <div class="sheet-title">
+                    <h3 id="previewModalTitle">Keyboard</h3>
+                    <p class="dev"><span id="previewModalAuthorBadge">ALLStudio</span> <span id="previewModalVerified" class="material-symbols-rounded filled verified" title="Official ALLStudio package">verified</span> · <span id="previewModalCategory"></span></p>
+                </div>
+                <div class="sheet-actions">
+                    <button type="button" id="likeKeyboardBtn" class="btn btn-soft like-btn" aria-pressed="false" aria-label="Like this keyboard" hidden>
+                        <span class="material-symbols-rounded">favorite</span><span class="like-count">0</span>
+                    </button>
+                    <div class="share-wrap" id="shareWrap">
+                        <button type="button" id="shareKeyboardBtn" class="btn btn-soft share-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="shareMenu">
+                            <span class="material-symbols-rounded">ios_share</span><span class="label">Share</span>
+                        </button>
+                        <div id="shareMenu" class="share-menu" role="menu" hidden>
+                            <div class="share-head">
+                                <strong>Share this keyboard</strong>
+                                <span class="mono" data-share-url></span>
+                            </div>
+                            <button type="button" class="share-item primary" data-copy-link role="menuitem"><span class="material-symbols-rounded">link</span>Copy link</button>
+                            <div class="share-grid">
+                                <a class="share-app" data-share="whatsapp" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .1-3.3-.8-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg></span>WhatsApp</a>
+                                <a class="share-app" data-share="telegram" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot tg"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.6 4.2 2.9 11.4c-1.3.5-1.3 1.2-.2 1.6l4.8 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.6.2 1.8-.8l3.2-15.1c.3-1.3-.5-1.9-1.8-1.3ZM8 14.1l10.3-6.5c.5-.3.9-.1.6.2l-8.8 8-.3 3.6L8 14.1Z"/></svg></span>Telegram</a>
+                                <a class="share-app" data-share="x" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot xx"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.7 8 10.3h-6.2l-4.9-6.3L5.4 21H2.3l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg></span>X</a>
+                                <a class="share-app" data-share="reddit" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot rd"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22 12.1a2.2 2.2 0 0 0-3.7-1.6 10.8 10.8 0 0 0-5.8-1.8l1-4.6 3.2.7a1.6 1.6 0 1 0 .2-1l-3.6-.8a.5.5 0 0 0-.6.4l-1.1 5.3c-2.2 0-4.3.7-5.9 1.8a2.2 2.2 0 1 0-2.4 3.6v.6c0 3.4 3.9 6.1 8.8 6.1s8.8-2.7 8.8-6.1v-.6A2.2 2.2 0 0 0 22 12.1ZM7 13.7a1.6 1.6 0 1 1 3.1 0 1.6 1.6 0 0 1-3.1 0Zm8.8 4.1a5.7 5.7 0 0 1-3.8 1.2 5.7 5.7 0 0 1-3.8-1.2.4.4 0 0 1 .6-.6 4.9 4.9 0 0 0 3.2 1 4.9 4.9 0 0 0 3.2-1 .4.4 0 1 1 .6.6Zm-.3-2.5a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z"/></svg></span>Reddit</a>
+                                <a class="share-app" data-share="email" href="#" role="menuitem"><span class="dot em"><span class="material-symbols-rounded">mail</span></span>Email</a>
+                                <button type="button" class="share-app" data-copy-file role="menuitem"><span class="dot fl"><span class="material-symbols-rounded">attach_file</span></span>File link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="previewModalDownloadBtn" href="#" download class="btn btn-ink" data-dl="">
+                        <span class="material-symbols-rounded">download</span>Get
+                    </a>
+                </div>
+            </div>
+
+            <div id="previewModalStats" class="stat-strip compact"></div>
+
+            <div class="try-panel">
+                <div class="try-bar">
+                    <span class="try-label">Try it</span>
+                    <span id="modalSandboxText" class="mono try-text"></span>
+                    <span id="modalSandboxNote" class="try-note" hidden></span>
+                    <button type="button" id="modalSandboxClearBtn" class="btn btn-ghost btn-xs">Clear</button>
+                </div>
+                <div id="modalLayerTabs" class="chips small"></div>
+                <div class="stage-wrap">
+                    <div id="modalKeyboardStage" class="kbd-stage"></div>
+                    <div id="altPopover" class="alt-popover" hidden></div>
+                </div>
+                <div id="modalKeyInspector" class="key-inspector" aria-live="polite">Tap or hold a key to see what it does.</div>
+            </div>
+
+            <div class="sheet-body">
+                <div>
+                    <h4>About this keyboard</h4>
+                    <p id="previewModalDesc"></p>
+                    <div id="previewModalTags" class="tag-row"></div>
+                </div>
+                <div class="pkg-info">
+                    <h4>Package</h4>
+                    <dl>
+                        <dt>ID</dt><dd id="previewModalIdBadge" class="mono"></dd>
+                        <dt>File</dt><dd id="previewModalFile" class="mono"></dd>
+                        <dt>Checksum</dt><dd id="previewModalSha" class="mono sha"></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="./" class="brand small"><img src="./icon-192.png" alt="" width="24" height="24"><span class="wordmark">Nok<span class="y">y</span></span></a>
+                <p>Keyboards and word packs for Noky Keyboard, made by <a href="https://allstudio.app">ALLStudio</a>.</p>
+            </div>
+            <nav class="footer-col" aria-label="Browse">
+                <strong>Browse</strong>
+                <a href="./">Discover</a>
+                <a href="./keyboards.html">Keyboards</a>
+                <a href="./word-packs.html">Word packs</a>
+            </nav>
+            <nav class="footer-col" aria-label="Create">
+                <strong>Create</strong>
+                <a href="./create.html">Publish a keyboard</a>
+                <a href="./create.html#request">Request a layout</a>
+                <a href="https://github.com/alllifelevel/noky" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
+            <nav class="footer-col" aria-label="Noky">
+                <strong>Noky</strong>
+                <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer">Google Play</a>
+                <a href="./privacy-policy.html">Privacy</a>
+                <a href="https://allstudio.app">ALLStudio</a>
+            </nav>
+        </div>
+    </footer>
+
+    <nav class="tabbar" aria-label="Main">
+        <a href="./" aria-current="page"><span class="material-symbols-rounded filled" aria-hidden="true">explore</span><span>Discover</span></a>
+        <a href="./keyboards.html"><span class="material-symbols-rounded" aria-hidden="true">keyboard</span><span>Keyboards</span></a>
+        <a href="./word-packs.html"><span class="material-symbols-rounded" aria-hidden="true">menu_book</span><span>Word packs</span></a>
+        <a href="./create.html"><span class="material-symbols-rounded" aria-hidden="true">add_circle</span><span>Create</span></a>
+    </nav>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="./config.js" defer></script>
+    <script src="./stats.js" defer></script>
+    <script src="./key-icons.js" defer></script>
+    <script src="./renderer.js" defer></script>
+    <script src="./app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Create &amp; publish — Noky Keyboard</title>
+    <meta name="description" content="Publish your own Noky keyboard: check your .nokyboard file in the browser and submit it to the catalog, or request a new layout.">
+    <meta name="theme-color" content="#F4F0FF">
+    <link rel="canonical" href="https://noky.allstudio.app/create.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Noky Keyboard">
+    <meta property="og:title" content="Create &amp; publish — Noky Keyboard">
+    <meta property="og:description" content="Publish your own Noky keyboard: check your .nokyboard file in the browser and submit it to the catalog, or request a new layout.">
+    <meta property="og:url" content="https://noky.allstudio.app/create.html">
+    <meta property="og:image" content="https://noky.allstudio.app/icon.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icon subset for the page itself (see README → Icons). Keyboard previews fetch their own icons on demand. -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0&icon_names=add,add_circle,arrow_forward,attach_file,auto_awesome,back_hand,block,bolt,check_circle,chevron_right,close,cloud_off,dashboard_customize,delete_sweep,dialpad,download,download_done,edit_note,error,expand_more,explore,fact_check,favorite,fingerprint,function,gpp_maybe,heart_minus,hexagon,horizontal_rule,info,ios_share,keyboard,link,lock,mail,menu_book,new_releases,palette,psychology,publish,rocket_launch,search,search_off,settings,share_off,shield,shield_lock,sort,swap_horiz,task_alt,terminal,upload_file,verified,verified_user,visibility,warning,workspace_premium&display=block" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="create">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="backdrop-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <header class="topbar">
+        <div class="container topbar-row">
+            <a href="./" class="brand" aria-label="Noky home">
+                <img src="./icon-192.png" alt="" class="brand-icon" width="36" height="36">
+                <span class="wordmark">Nok<span class="y">y</span></span>
+            </a>
+            <nav class="topnav" aria-label="Main">
+                <a href="./">Discover</a>
+                <a href="./keyboards.html">Keyboards</a>
+                <a href="./word-packs.html">Word packs</a>
+                <a href="./create.html" aria-current="page" class="nav-create"><span class="material-symbols-rounded" aria-hidden="true">add</span>Create</a>
+            </nav>
+            <label class="search">
+                <span class="material-symbols-rounded" aria-hidden="true">search</span>
+                <input type="search" id="kbdSearchInput" placeholder="Search keyboards" aria-label="Search keyboards" autocomplete="off" enterkeyhint="search">
+                <kbd class="slash" aria-hidden="true">/</kbd>
+            </label>
+            <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer" class="btn btn-ink btn-sm get-app">
+                Get the app
+            </a>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="create-hero">
+            <div class="container create-hero-grid">
+                <div>
+                    <span class="eyebrow">For creators</span>
+                    <h1>Publish your keyboard</h1>
+                    <p class="hero-sub">Built something great in Noky's Layout Manager? Share it with everyone. It takes about two minutes, and your keyboard gets its own page people can try live.</p>
+                    <div class="hero-cta">
+                        <a href="#publish" class="btn btn-ink btn-lg" data-goto-pane="publish">Check my file</a>
+                        <a href="#request" class="btn btn-soft btn-lg" data-goto-pane="request">Request a layout</a>
+                    </div>
+                </div>
+                <ol class="journey" aria-label="How publishing works">
+                    <li><span class="squircle c-purple"><span class="material-symbols-rounded filled">dashboard_customize</span></span><div><strong>Design it in Noky</strong><span>Make it in the Layout Manager: shapes, colours, layers, fonts.</span></div></li>
+                    <li><span class="squircle c-blue"><span class="material-symbols-rounded filled">ios_share</span></span><div><strong>Export a .nokyboard</strong><span>Open your keyboard and tap <em>Export .nokyboard</em>. You get one shareable file.</span></div></li>
+                    <li><span class="squircle c-green"><span class="material-symbols-rounded filled">fact_check</span></span><div><strong>Check it here</strong><span>Drop the file below. Nothing is uploaded — it's checked in your browser.</span></div></li>
+                    <li><span class="squircle c-pink"><span class="material-symbols-rounded filled">rocket_launch</span></span><div><strong>Submit</strong><span>Open a pull request or an issue on GitHub. We review and add it.</span></div></li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="create" class="section">
+            <div class="container">
+                <div class="segmented" role="tablist" aria-label="Create">
+                    <button type="button" role="tab" class="seg active" data-pane="publish" aria-selected="true">Publish a package</button>
+                    <button type="button" role="tab" class="seg" data-pane="request" aria-selected="false">Request a layout</button>
+                </div>
+
+                <!-- Publish -->
+                <div id="publish" class="pane active" role="tabpanel">
+                    <div class="workspace">
+                        <div class="card">
+                            <div class="card-head">
+                                <h3><span class="squircle sm c-green"><span class="material-symbols-rounded">fact_check</span></span>Check your file</h3>
+                                <button type="button" id="loadSampleInspectorBtn" class="btn btn-ghost btn-sm">Try a sample</button>
+                            </div>
+                            <p class="muted">We check that it will install in Noky. Your file stays on your device.</p>
+                            <div id="packageDropzone" class="dropzone" tabindex="0" role="button" aria-label="Select a .nokyboard or .nokydict file">
+                                <span class="material-symbols-rounded">upload_file</span>
+                                <strong>Drop a .nokyboard or .nokydict file</strong>
+                                <span class="muted">or click to choose</span>
+                                <input type="file" id="packageFileInput" accept=".nokyboard,.nokydict,.json,.zip" hidden>
+                            </div>
+                            <div id="inspectorReport" class="report"></div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-head">
+                                <h3><span class="squircle sm c-purple"><span class="material-symbols-rounded">publish</span></span>Submit to the catalog</h3>
+                                <button type="button" id="previewInspectedBtn" class="btn btn-soft btn-sm" hidden>
+                                    <span class="material-symbols-rounded">visibility</span>Preview
+                                </button>
+                            </div>
+                            <p class="muted">Add your file on GitHub with a pull request, or open an issue and attach it. We review every keyboard before it goes live.</p>
+                            <details class="json-details">
+                                <summary>Details for reviewers</summary>
+                            <pre id="generatedCatalogJson" class="json-box">{
+  "status": "Waiting for a package"
+}</pre>
+                            </details>
+                            <div class="btn-row">
+                                <a id="openGithubPrBtn" href="https://github.com/alllifelevel/noky/upload/main/website/noky/packages/keyboards" target="_blank" rel="noopener noreferrer" class="btn btn-ink btn-sm">Open pull request</a>
+                                <a id="openGithubIssueSubmitBtn" href="https://github.com/alllifelevel/noky/issues/new?labels=package-submission&amp;title=%5BPackage+Submission%5D+New+Noky+Package" target="_blank" rel="noopener noreferrer" class="btn btn-soft btn-sm">Submit as issue</a>
+                                <button type="button" id="copyCatalogJsonBtn" class="btn btn-ghost btn-sm">Copy details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request -->
+                <div id="request" class="pane" role="tabpanel">
+                    <form id="layoutRequestForm" class="card form-grid">
+                        <label class="field">
+                            <span>Type</span>
+                            <select id="reqType">
+                                <option value="Keyboard Layout (.nokyboard)">Keyboard layout</option>
+                                <option value="Offline Dictionary (.nokydict)">Word pack</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Name *</span>
+                            <input type="text" id="reqName" placeholder="Workman, Japanese Romaji, Medical terms…" required>
+                        </label>
+                        <label class="field">
+                            <span>Category</span>
+                            <select id="reqCategory">
+                                <option value="Language / Regional">Language / regional</option>
+                                <option value="Ergonomic &amp; Split">Ergonomic &amp; split</option>
+                                <option value="Coding &amp; Terminal">Coding &amp; terminal</option>
+                                <option value="Custom Shapes &amp; Geometric">Custom shapes</option>
+                                <option value="STEM / Symbols">STEM / symbols</option>
+                                <option value="Gaming &amp; Macros">Gaming &amp; macros</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Key shape</span>
+                            <select id="reqShapes">
+                                <option value="ROUNDED_RECT (Standard)">Rounded</option>
+                                <option value="SQUIRCLE (Smooth Ergonomic)">Squircle</option>
+                                <option value="HEXAGON (Honeycomb / Offset)">Hexagon</option>
+                                <option value="CUT_CORNERS (Mechanical)">Cut corners</option>
+                                <option value="PILL / CIRCLE">Pill / circle</option>
+                                <option value="DIAMOND">Diamond</option>
+                            </select>
+                        </label>
+                        <label class="field full">
+                            <span>Details</span>
+                            <textarea id="reqDetails" rows="4" placeholder="Rows, special keys, offsets or language code…"></textarea>
+                        </label>
+                        <div class="full btn-row">
+                            <button type="submit" class="btn btn-ink">Open request on GitHub</button>
+                            <button type="button" id="copyRequestMarkdownBtn" class="btn btn-ghost">Copy as Markdown</button>
+                            <span id="requestFeedbackMsg" class="feedback" role="status"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-head"><div><h2>Good to know</h2><p>The rules every package follows</p></div></div>
+                <div class="faq">
+                    <details open><summary>What ID should my keyboard use?</summary><p>Use <code>YourName-KeyboardName</code>, for example <code>Riya-PastelSplit</code>: letters, digits or <code>_</code> on each side of a single dash; 2–24 characters before it and 2–32 after. Names starting with <code>Noky</code> are reserved and can't be used.</p></details>
+                    <details><summary>What does the <span class="material-symbols-rounded filled verified" style="vertical-align: -3px;">verified</span> badge mean?</summary><p>It marks keyboards published by ALLStudio.</p></details>
+                    <details><summary>Is my file uploaded when I check it?</summary><p>No. The check happens right here in your browser. You only share the file when you open the pull request or issue yourself.</p></details>
+                    <details><summary>What can a keyboard contain?</summary><p>Anything the Layout Manager can make: multiple layers, the 8 key shapes, gradients, glow, borders, X/Y offsets, rotation, Google Fonts, long-press actions, accent pop-ups, macros and Ctrl/Alt/Fn keys. The live preview here uses the same rules as the app.</p></details>
+                    <details><summary>How long does review take?</summary><p>Usually a few days. Once merged, your keyboard appears on the Keyboards page with its own share link.</p></details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Keyboard details sheet -->
+    <div id="previewModalBackdrop" class="sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" hidden>
+        <div class="sheet">
+            <button type="button" id="closePreviewModalBtn" class="icon-btn sheet-close" aria-label="Close">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+
+            <div class="sheet-head">
+                <span id="previewModalIcon" class="squircle lg c-purple"><span class="material-symbols-rounded filled">keyboard</span></span>
+                <div class="sheet-title">
+                    <h3 id="previewModalTitle">Keyboard</h3>
+                    <p class="dev"><span id="previewModalAuthorBadge">ALLStudio</span> <span id="previewModalVerified" class="material-symbols-rounded filled verified" title="Official ALLStudio package">verified</span> · <span id="previewModalCategory"></span></p>
+                </div>
+                <div class="sheet-actions">
+                    <button type="button" id="likeKeyboardBtn" class="btn btn-soft like-btn" aria-pressed="false" aria-label="Like this keyboard" hidden>
+                        <span class="material-symbols-rounded">favorite</span><span class="like-count">0</span>
+                    </button>
+                    <div class="share-wrap" id="shareWrap">
+                        <button type="button" id="shareKeyboardBtn" class="btn btn-soft share-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="shareMenu">
+                            <span class="material-symbols-rounded">ios_share</span><span class="label">Share</span>
+                        </button>
+                        <div id="shareMenu" class="share-menu" role="menu" hidden>
+                            <div class="share-head">
+                                <strong>Share this keyboard</strong>
+                                <span class="mono" data-share-url></span>
+                            </div>
+                            <button type="button" class="share-item primary" data-copy-link role="menuitem"><span class="material-symbols-rounded">link</span>Copy link</button>
+                            <div class="share-grid">
+                                <a class="share-app" data-share="whatsapp" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot wa"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5.1-1 .1-3.3-.8-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg></span>WhatsApp</a>
+                                <a class="share-app" data-share="telegram" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot tg"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.6 4.2 2.9 11.4c-1.3.5-1.3 1.2-.2 1.6l4.8 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.6.2 1.8-.8l3.2-15.1c.3-1.3-.5-1.9-1.8-1.3ZM8 14.1l10.3-6.5c.5-.3.9-.1.6.2l-8.8 8-.3 3.6L8 14.1Z"/></svg></span>Telegram</a>
+                                <a class="share-app" data-share="x" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot xx"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.7 8 10.3h-6.2l-4.9-6.3L5.4 21H2.3l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg></span>X</a>
+                                <a class="share-app" data-share="reddit" href="#" target="_blank" rel="noopener noreferrer" role="menuitem"><span class="dot rd"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M22 12.1a2.2 2.2 0 0 0-3.7-1.6 10.8 10.8 0 0 0-5.8-1.8l1-4.6 3.2.7a1.6 1.6 0 1 0 .2-1l-3.6-.8a.5.5 0 0 0-.6.4l-1.1 5.3c-2.2 0-4.3.7-5.9 1.8a2.2 2.2 0 1 0-2.4 3.6v.6c0 3.4 3.9 6.1 8.8 6.1s8.8-2.7 8.8-6.1v-.6A2.2 2.2 0 0 0 22 12.1ZM7 13.7a1.6 1.6 0 1 1 3.1 0 1.6 1.6 0 0 1-3.1 0Zm8.8 4.1a5.7 5.7 0 0 1-3.8 1.2 5.7 5.7 0 0 1-3.8-1.2.4.4 0 0 1 .6-.6 4.9 4.9 0 0 0 3.2 1 4.9 4.9 0 0 0 3.2-1 .4.4 0 1 1 .6.6Zm-.3-2.5a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z"/></svg></span>Reddit</a>
+                                <a class="share-app" data-share="email" href="#" role="menuitem"><span class="dot em"><span class="material-symbols-rounded">mail</span></span>Email</a>
+                                <button type="button" class="share-app" data-copy-file role="menuitem"><span class="dot fl"><span class="material-symbols-rounded">attach_file</span></span>File link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <a id="previewModalDownloadBtn" href="#" download class="btn btn-ink" data-dl="">
+                        <span class="material-symbols-rounded">download</span>Get
+                    </a>
+                </div>
+            </div>
+
+            <div id="previewModalStats" class="stat-strip compact"></div>
+
+            <div class="try-panel">
+                <div class="try-bar">
+                    <span class="try-label">Try it</span>
+                    <span id="modalSandboxText" class="mono try-text"></span>
+                    <span id="modalSandboxNote" class="try-note" hidden></span>
+                    <button type="button" id="modalSandboxClearBtn" class="btn btn-ghost btn-xs">Clear</button>
+                </div>
+                <div id="modalLayerTabs" class="chips small"></div>
+                <div class="stage-wrap">
+                    <div id="modalKeyboardStage" class="kbd-stage"></div>
+                    <div id="altPopover" class="alt-popover" hidden></div>
+                </div>
+                <div id="modalKeyInspector" class="key-inspector" aria-live="polite">Tap or hold a key to see what it does.</div>
+            </div>
+
+            <div class="sheet-body">
+                <div>
+                    <h4>About this keyboard</h4>
+                    <p id="previewModalDesc"></p>
+                    <div id="previewModalTags" class="tag-row"></div>
+                </div>
+                <div class="pkg-info">
+                    <h4>Package</h4>
+                    <dl>
+                        <dt>ID</dt><dd id="previewModalIdBadge" class="mono"></dd>
+                        <dt>File</dt><dd id="previewModalFile" class="mono"></dd>
+                        <dt>Checksum</dt><dd id="previewModalSha" class="mono sha"></dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="./" class="brand small"><img src="./icon-192.png" alt="" width="24" height="24"><span class="wordmark">Nok<span class="y">y</span></span></a>
+                <p>Keyboards and word packs for Noky Keyboard, made by <a href="https://allstudio.app">ALLStudio</a>.</p>
+            </div>
+            <nav class="footer-col" aria-label="Browse">
+                <strong>Browse</strong>
+                <a href="./">Discover</a>
+                <a href="./keyboards.html">Keyboards</a>
+                <a href="./word-packs.html">Word packs</a>
+            </nav>
+            <nav class="footer-col" aria-label="Create">
+                <strong>Create</strong>
+                <a href="./create.html">Publish a keyboard</a>
+                <a href="./create.html#request">Request a layout</a>
+                <a href="https://github.com/alllifelevel/noky" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
+            <nav class="footer-col" aria-label="Noky">
+                <strong>Noky</strong>
+                <a href="https://play.google.com/store/apps/details?id=app.allstudio.noky" target="_blank" rel="noopener noreferrer">Google Play</a>
+                <a href="./privacy-policy.html">Privacy</a>
+                <a href="https://allstudio.app">ALLStudio</a>
+            </nav>
+        </div>
+    </footer>
+
+    <nav class="tabbar" aria-label="Main">
+        <a href="./"><span class="material-symbols-rounded" aria-hidden="true">explore</span><span>Discover</span></a>
+        <a href="./keyboards.html"><span class="material-symbols-rounded" aria-hidden="true">keyboard</span><span>Keyboards</span></a>
+        <a href="./word-packs.html"><span class="material-symbols-rounded" aria-hidden="true">menu_book</span><span>Word packs</span></a>
+        <a href="./create.html" aria-current="page"><span class="material-symbols-rounded filled" aria-hidden="true">add_circle</span><span>Create</span></a>
+    </nav>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="./config.js" defer></script>
+    <script src="./stats.js" defer></script>
+    <script src="./key-icons.js" defer></script>
+    <script src="./renderer.js" defer></script>
+    <script src="./app.js" defer></script>
+</body>
+</html>
