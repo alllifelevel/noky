@@ -662,3 +662,4 @@ code, .mono, .pkg-info dd { overflow-wrap: anywhere; }
     .sheet-actions:has(> .like-btn[hidden]) { grid-template-columns: 1fr 1fr; }
     .sheet-actions .share-wrap, .sheet-actions .share-btn, .sheet-actions > .btn { width: 100%; min-width: 0; }
 }
+.faq-badge { font-size: 1.15em !important; vertical-align: -0.2em; margin: 0 1px; }
