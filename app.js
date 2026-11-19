@@ -1392,26 +1392,20 @@
             previewBtn.hidden = false;
             previewBtn.onclick = () => openPreviewModal(lastInspectedEntry);
         }
-        if (prBtn) prBtn.href = `${GITHUB_REPO}/upload/main/website/noky/packages/keyboards`;
+        // The public repo is the site itself, so packages live at packages/… (not website/noky/…).
+        if (prBtn) prBtn.href = `${GITHUB_REPO}/upload/main/packages/keyboards`;
         if (issueBtn) {
-            const title = `[Keyboard Submission] ${catalogEntry.name} (${catalogEntry.id})`;
+            const title = `Keyboard submission: ${catalogEntry.name} (${catalogEntry.id})`;
             const body = [
-                `### Noky Keyboard Package Submission`,
-                `- **Keyboard Name:** ${catalogEntry.name}`,
-                `- **Keyboard ID:** \`${catalogEntry.id}\``,
-                `- **Author:** ${catalogEntry.author}`,
-                `- **Keys / Rows / Layers:** ${catalogEntry.keyCount} keys, ${catalogEntry.rowCount} rows, ${catalogEntry.layerCount} layer(s)`,
-                `- **Shapes Used:** ${catalogEntry.shapesUsed.join(", ")}`,
-                `- **Signed by Noky:** ${signed ? "yes (verified)" : "no"}`,
-                `- **SHA-256:** \`${catalogEntry.sha256}\``,
+                `**⬇️ Attach your file:** drag \`${catalogEntry.fileName}\` into this box, then click **Create**.`,
                 ``,
-                `#### Attach Package File`,
-                `*(Drag and drop your \`${catalogEntry.fileName}\` file right here before clicking Submit)*`,
+                `---`,
                 ``,
-                `#### Generated Catalog Entry`,
-                "```json",
-                JSON.stringify(catalogEntry, null, 2),
-                "```",
+                `**Keyboard:** ${catalogEntry.name} (\`${catalogEntry.id}\`)`,
+                `**Made by:** ${catalogEntry.author}`,
+                `**About it:** ${catalogEntry.description}`,
+                ``,
+                `<!-- Checked on noky.allstudio.app · ${catalogEntry.layerCount} layer(s), ${catalogEntry.keyCount} keys · sha256 ${catalogEntry.sha256} -->`,
             ].join("\n");
             issueBtn.href = `${GITHUB_REPO}/issues/new?labels=package-submission&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
         }
@@ -1433,23 +1427,18 @@
             ].join("");
         }
         if (jsonEl) jsonEl.textContent = JSON.stringify(dictEntry, null, 2);
-        if (prBtn) prBtn.href = `${GITHUB_REPO}/upload/main/website/noky/packages/dictionaries`;
+        if (prBtn) prBtn.href = `${GITHUB_REPO}/upload/main/packages/dictionaries`;
         if (issueBtn) {
-            const title = `[Dictionary Submission] ${dictEntry.displayName} (${dictEntry.code}.nokydict)`;
+            const title = `Word pack submission: ${dictEntry.displayName} (${dictEntry.code})`;
             const body = [
-                `### Noky Dictionary Package Submission`,
-                `- **Language / Pack Name:** ${dictEntry.displayName} (${dictEntry.nativeName})`,
-                `- **Code:** \`${dictEntry.code}\``,
-                `- **Category:** ${dictEntry.category}`,
-                `- **Word Count:** ${dictEntry.wordCount}`,
-                `- **SHA-256:** \`${dictEntry.sha256}\``,
+                `**⬇️ Attach your file:** drag \`${dictEntry.fileName}\` into this box, then click **Create**.`,
                 ``,
-                `#### Attach Package File`,
-                `*(Drag and drop your \`${dictEntry.fileName}\` file here)*`,
+                `---`,
                 ``,
-                "```json",
-                JSON.stringify(dictEntry, null, 2),
-                "```",
+                `**Word pack:** ${dictEntry.displayName} — ${dictEntry.nativeName} (\`${dictEntry.code}\`)`,
+                `**Words:** ${Number(dictEntry.wordCount || 0).toLocaleString()}`,
+                ``,
+                `<!-- Checked on noky.allstudio.app · sha256 ${dictEntry.sha256 || ""} -->`,
             ].join("\n");
             issueBtn.href = `${GITHUB_REPO}/issues/new?labels=dictionary-submission&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
         }
