@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Icon subset for the page itself (see README → Icons). Keyboard previews fetch their own icons on demand. -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0&icon_names=add,add_circle,arrow_forward,attach_file,auto_awesome,back_hand,block,bolt,check_circle,chevron_right,close,cloud_off,dashboard_customize,delete_sweep,dialpad,download,download_done,edit_note,error,expand_more,explore,fact_check,favorite,fingerprint,function,gpp_maybe,heart_minus,hexagon,horizontal_rule,info,ios_share,keyboard,link,lock,mail,menu_book,new_releases,palette,psychology,publish,rocket_launch,search,search_off,settings,share_off,shield,shield_lock,sort,swap_horiz,task_alt,terminal,upload_file,verified,verified_user,visibility,warning,workspace_premium&display=block" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css?v=85855b766b">
+    <link rel="stylesheet" href="./styles.css?v=211446e5a2">
 </head>
 <body data-page="create">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -66,7 +66,7 @@
                     <li><span class="squircle c-purple"><span class="material-symbols-rounded filled">dashboard_customize</span></span><div><strong>Design it in Noky</strong><span>Make it in the Layout Manager: shapes, colours, layers, fonts.</span></div></li>
                     <li><span class="squircle c-blue"><span class="material-symbols-rounded filled">ios_share</span></span><div><strong>Export a .nokyboard</strong><span>Open your keyboard and tap <em>Export .nokyboard</em>. You get one shareable file.</span></div></li>
                     <li><span class="squircle c-green"><span class="material-symbols-rounded filled">fact_check</span></span><div><strong>Check it here</strong><span>Drop the file below. Nothing is uploaded — it's checked in your browser.</span></div></li>
-                    <li><span class="squircle c-pink"><span class="material-symbols-rounded filled">rocket_launch</span></span><div><strong>Submit</strong><span>Open a pull request or an issue on GitHub. We review and add it.</span></div></li>
+                    <li><span class="squircle c-pink"><span class="material-symbols-rounded filled">rocket_launch</span></span><div><strong>Submit</strong><span>Press Submit — no account needed. We review it and add it to the catalog.</span></div></li>
                 </ol>
             </div>
         </section>
@@ -103,19 +103,32 @@
                                     <span class="material-symbols-rounded">visibility</span>Preview
                                 </button>
                             </div>
-                            <p class="muted">Add your file on GitHub with a pull request, or open an issue and attach it. We review every keyboard before it goes live.</p>
-                            <p class="muted small-note">You'll need a free GitHub account — sign in first. For a pull request, GitHub asks you to <strong>fork</strong> (make your own copy) before uploading, then opens the pull request for you.</p>
+                            <p class="muted">Check your file, then send it to us in one tap — no account needed. We review every submission before it goes live.</p>
+                            <form id="submitPackageForm" class="submit-form" novalidate>
+                                <label class="field">
+                                    <span>GitHub username <em class="opt">optional</em></span>
+                                    <input type="text" id="submitGithub" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="To get notified about the review">
+                                </label>
+                                <label class="field">
+                                    <span>Note for reviewers <em class="opt">optional</em></span>
+                                    <textarea id="submitNote" rows="2" maxlength="500" placeholder="Anything we should know?"></textarea>
+                                </label>
+                                <div id="turnstileBox" class="turnstile-box"></div>
+                                <div class="btn-row">
+                                    <button type="submit" id="submitPackageBtn" class="btn btn-ink btn-sm" disabled>
+                                        <span class="material-symbols-rounded" aria-hidden="true">publish</span>Submit
+                                    </button>
+                                    <button type="button" id="copyCatalogJsonBtn" class="btn btn-ghost btn-sm">Copy details</button>
+                                </div>
+                                <div id="submitResult" class="submit-result" role="status" aria-live="polite">Check a file to submit it.</div>
+                            </form>
                             <details class="json-details">
                                 <summary>Details for reviewers</summary>
                             <pre id="generatedCatalogJson" class="json-box">{
   "status": "Waiting for a package"
 }</pre>
                             </details>
-                            <div class="btn-row">
-                                <a id="openGithubPrBtn" href="https://github.com/alllifelevel/noky/upload/main/packages/keyboards" target="_blank" rel="noopener noreferrer" class="btn btn-ink btn-sm">Open pull request</a>
-                                <a id="openGithubIssueSubmitBtn" href="https://github.com/alllifelevel/noky/issues/new?labels=package-submission&amp;title=Keyboard+submission%3A+" target="_blank" rel="noopener noreferrer" class="btn btn-soft btn-sm">Submit as issue</a>
-                                <button type="button" id="copyCatalogJsonBtn" class="btn btn-ghost btn-sm">Copy details</button>
-                            </div>
+                            <p class="muted small-note">Your file, and the username and note if you add them, are published in a public pull request on <a href="https://github.com/alllifelevel/noky/pulls" target="_blank" rel="noopener noreferrer">GitHub</a>. Prefer GitHub? <a href="https://github.com/alllifelevel/noky#publish-your-keyboard" target="_blank" rel="noopener noreferrer">Fork the repo and open a pull request</a>.</p>
                         </div>
                     </div>
                 </div>
@@ -176,9 +189,9 @@
                 <div class="faq">
                     <details open><summary>What ID should my keyboard use?</summary><p>Use <code>YourName-KeyboardName</code>, for example <code>Riya-PastelSplit</code>: letters, digits or <code>_</code> on each side of a single dash; 2–24 characters before it and 2–32 after. Names starting with <code>Noky</code> are reserved and can't be used.</p></details>
                     <details><summary><span>What does the <span class="material-symbols-rounded filled verified faq-badge" aria-label="verified">verified</span> badge mean?</span></summary><p>It marks keyboards made and published by ALLStudio, the studio behind Noky. Community keyboards don't carry it, whatever name they use.</p></details>
-                    <details><summary>Is my file uploaded when I check it?</summary><p>No. The check happens right here in your browser. You only share the file when you open the pull request or issue yourself.</p></details>
+                    <details><summary>Is my file uploaded when I check it?</summary><p>No. The check happens right here in your browser. The file is only sent when you press <strong>Submit</strong>; it then goes into a public pull request on GitHub for review.</p></details>
                     <details><summary>What can a keyboard contain?</summary><p>Anything the Layout Manager can make: multiple layers, the 8 key shapes, gradients, glow, borders, X/Y offsets, rotation, Google Fonts, long-press actions, accent pop-ups, macros and Ctrl/Alt/Fn keys. The live preview here uses the same rules as the app.</p></details>
-                    <details><summary>How long does review take?</summary><p>Usually a few days. Once merged, your keyboard appears on the Keyboards page with its own share link.</p></details>
+                    <details><summary>How long does review take?</summary><p>Usually a few days. You get a link to follow your submission, and if you add your GitHub username, GitHub notifies you too. Once approved, your keyboard appears on the Keyboards page with its own share link.</p></details>
                 </div>
             </div>
         </section>
@@ -298,10 +311,10 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="./config.js?v=f809922521" defer></script>
+    <script src="./config.js?v=545b704571" defer></script>
     <script src="./stats.js?v=38d0a9556a" defer></script>
     <script src="./key-icons.js?v=28508726af" defer></script>
     <script src="./renderer.js?v=bbb91b7966" defer></script>
-    <script src="./app.js?v=f99845006c" defer></script>
+    <script src="./app.js?v=547b33a394" defer></script>
 </body>
 </html>

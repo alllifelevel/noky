@@ -28,19 +28,37 @@ jobs:
       published: ${{ steps.merge.outputs.published }}
     env:
       GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}   # gh needs this in steps that run before checkout
       PR: ${{ github.event.issue.number }}
       BODY: ${{ github.event.comment.body }}
       ACTOR: ${{ github.event.comment.user.login }}
     steps:
       - name: Acknowledge
-        run: gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/${{ github.event.comment.id }}/reactions" -f content=eyes > /dev/null || true
+        id: info
+        run: |
+          gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/${{ github.event.comment.id }}/reactions" -f content=eyes > /dev/null || true
+          # Pull requests opened by the website live on a submit/... branch in this repo.
+          head=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefName,isCrossRepository --jq 'if .isCrossRepository then "" else .headRefName end')
+          if [[ "$head" == submit/* ]]; then echo "site_branch=$head" >> "$GITHUB_OUTPUT"; fi
 
       - name: Ask for changes
         if: startsWith(github.event.comment.body, '/changes')
+        env:
+          SITE_BRANCH: ${{ steps.info.outputs.site_branch }}
         run: |
           set -euo pipefail
           note=$(printf '%s' "$BODY" | sed -E '1s#^/changes[[:space:]]*##')
           [ -n "$note" ] || note="Please take another look at the checklist above."
+          if [ -n "$SITE_BRANCH" ]; then
+            # Website submitters can't push to this branch, so they send a fixed file instead.
+            printf '### 🛠️ Changes requested\n\n%s\n\nFix it in Noky, export it again and submit the new file at https://noky.allstudio.app/create.html — this request will be closed.\n\n<sub>Requested by @%s</sub>\n' "$note" "$ACTOR" > "$RUNNER_TEMP/msg.md"
+            gh pr comment "$PR" --body-file "$RUNNER_TEMP/msg.md"
+            gh label create "needs-changes" --color d93f0b --force > /dev/null || true
+            gh pr edit "$PR" --add-label "needs-changes" --remove-label "ready-for-review" > /dev/null || true
+            gh pr close "$PR"
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$SITE_BRANCH" > /dev/null || true
+            exit 0
+          fi
           printf '### 🛠️ Changes requested\n\n%s\n\nPush an update to this pull request when it is ready — the checks run again automatically.\n\n<sub>Requested by @%s</sub>\n' "$note" "$ACTOR" > "$RUNNER_TEMP/msg.md"
           gh pr comment "$PR" --body-file "$RUNNER_TEMP/msg.md"
           gh label create "needs-changes" --color d93f0b --force > /dev/null || true
@@ -48,6 +66,8 @@ jobs:
 
       - name: Reject
         if: startsWith(github.event.comment.body, '/reject')
+        env:
+          SITE_BRANCH: ${{ steps.info.outputs.site_branch }}
         run: |
           set -euo pipefail
           note=$(printf '%s' "$BODY" | sed -E '1s#^/reject[[:space:]]*##')
@@ -55,7 +75,12 @@ jobs:
           printf '### Thanks for your submission\n\n%s\n\nYou are welcome to submit again any time.\n' "$note" > "$RUNNER_TEMP/msg.md"
           gh label create "declined" --color 6e7781 --force > /dev/null || true
           gh pr edit "$PR" --add-label "declined" --remove-label "ready-for-review" > /dev/null || true
-          gh pr close "$PR" --comment "$(cat "$RUNNER_TEMP/msg.md")"
+          if [ -n "$SITE_BRANCH" ]; then
+            gh pr close "$PR" --comment "$(cat "$RUNNER_TEMP/msg.md")"
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$SITE_BRANCH" > /dev/null || true
+          else
+            gh pr close "$PR" --comment "$(cat "$RUNNER_TEMP/msg.md")"
+          fi
 
       - name: Check out main
         if: startsWith(github.event.comment.body, '/approve')
@@ -91,10 +116,15 @@ jobs:
         id: merge
         env:
           IDS: ${{ steps.recheck.outputs.ids }}
+          SITE_BRANCH: ${{ steps.info.outputs.site_branch }}
         run: |
           set -euo pipefail
           # Merge exactly the commit that was just re-checked, even if something was pushed since.
           gh pr merge "$PR" --squash --subject "Add community submission (#$PR)" --match-head-commit "$(git rev-parse pr/head)"
+          # Website submissions leave a submit/... branch behind; tidy it up.
+          if [ -n "$SITE_BRANCH" ]; then
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$SITE_BRANCH" > /dev/null || true
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Approvals can land at the same time: always rebuild from the newest main and retry

@@ -59,9 +59,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
           READY: ${{ steps.check.outputs.ready }}
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           set -euo pipefail
           body="$RUNNER_TEMP/pr/report.md"
+          # Website submissions may name a GitHub user to notify; only a valid username is used.
+          who=$(printf '%s' "${PR_BODY:-}" | sed -nE 's/.*<!-- noky-submitter: ([A-Za-z0-9][A-Za-z0-9-]{0,38}) -->.*/\1/p' | head -n1 || true)
+          if [ -n "$who" ]; then printf '\n\ncc @%s — you will get updates here.\n' "$who" >> "$body"; fi
           existing=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
             --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | contains("<!-- noky-submission-check -->")))][0].id // empty')
           if [ -n "$existing" ]; then

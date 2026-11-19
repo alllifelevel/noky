@@ -664,3 +664,14 @@ code, .mono, .pkg-info dd { overflow-wrap: anywhere; }
 }
 .faq-badge { font-size: 1.15em !important; vertical-align: -0.2em; margin: 0 1px; }
 .small-note { font-size: 0.82rem; margin-top: -6px; }
+/* One-click submission */
+.submit-form { display: grid; gap: 12px; margin: 4px 0 14px; min-width: 0; }
+.field .opt { font-style: normal; font-weight: 600; color: var(--text-3, #8a8499); margin-left: 4px; }
+.turnstile-box { min-height: 0; max-width: 100%; overflow: hidden; }
+.turnstile-box:empty { display: none; }
+.submit-result { font-size: 0.86rem; border-radius: var(--r-sm); background: #faf8ff; padding: 10px 12px; color: var(--text-2); overflow-wrap: anywhere; }
+.submit-result.ok { background: #f0fdf4; }
+.submit-result.done { background: #f0fdf4; color: #166534; }
+.submit-result.err { background: #fff1f2; color: var(--danger); }
+.submit-result a { font-weight: 800; }
+.small-note a { color: var(--purple); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }

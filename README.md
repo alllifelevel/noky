@@ -38,11 +38,11 @@ Made something great in Noky's Layout Manager? Share it with everyone.
 
 1. **Export it** — in Noky, open your keyboard and tap **Export .nokyboard**.
 2. **Check it** — drop the file on the [Create page](https://noky.allstudio.app/create.html). It tells you right away if anything needs fixing, and your file never leaves your device.
-3. **Submit it**, whichever you prefer:
-   - **Pull request** — upload your file to [`packages/keyboards/`](packages/keyboards) (*Add file → Upload files*), or
-   - **Issue** — click *Submit as issue* on the Create page and attach the file.
+3. **Submit it** — press **Submit** on the same page. No account needed; add your GitHub username if you'd like GitHub to notify you about the review.
 
-Within a minute, an automatic check comments on your pull request: ✅ ready for review, or a short list of what to fix. Push a fix to the same pull request and it checks again. Once a maintainer approves, your keyboard goes live with its own page and share link.
+Your submission becomes a pull request here, and you get its link. Within a minute an automatic check comments on it: ✅ ready for review, or a short list of what to fix. If something needs fixing, fix it in Noky, export again and submit the new file. Once a maintainer approves, your keyboard goes live with its own page and share link.
+
+**Prefer GitHub?** Fork this repo, add your file to [`packages/keyboards/`](packages/keyboards) (or `packages/dictionaries/` for a word pack) and open a pull request. The same checks run, and you can push fixes to your pull request.
 
 ### Before you submit
 

@@ -11,6 +11,9 @@
 
     let currentPreviewKeyboard = null;
     let lastInspectedEntry = null;
+    // The file last dropped into the checker, and what (if anything) can be submitted from it.
+    let lastInspectedFile = null;
+    let submitTarget = null;
     let lastFocusedBeforeModal = null;
     let stage = null;
     let sheetPushed = false;
@@ -1230,6 +1233,8 @@
         const jsonEl = document.getElementById("generatedCatalogJson");
         const previewBtn = document.getElementById("previewInspectedBtn");
 
+        lastInspectedFile = file;
+        setSubmitTarget(null, "Checking your file…");
         try {
             const buf = await file.arrayBuffer();
             const fileSha = await sha256HexBuffer(buf);
@@ -1281,6 +1286,7 @@
             renderKeyboardInspectionReport(file.name, file.size, fileSha, pkg.layouts, Object.assign({ kind: "package" }, pkg));
         } catch (err) {
             if (previewBtn) previewBtn.hidden = true;
+            setSubmitTarget(null, "Fix the problem with this file, then check it again.");
             if (reportEl) {
                 reportEl.innerHTML = statusRow("err", "error", `<strong>Validation failed:</strong> ${escapeHtml(err.message || String(err))}`);
             }
@@ -1307,9 +1313,6 @@
         const reportEl = document.getElementById("inspectorReport");
         const jsonEl = document.getElementById("generatedCatalogJson");
         const previewBtn = document.getElementById("previewInspectedBtn");
-        const issueBtn = document.getElementById("openGithubIssueSubmitBtn");
-        const prBtn = document.getElementById("openGithubPrBtn");
-
         const layout = layouts[0];
         const layers = layout.layers || {};
         const initLayer = layers[layout.initialLayer] || Object.values(layers)[0] || { rows: [] };
@@ -1392,56 +1395,155 @@
             previewBtn.hidden = false;
             previewBtn.onclick = () => openPreviewModal(lastInspectedEntry);
         }
-        // The public repo is the site itself, so packages live at packages/… (not website/noky/…).
-        if (prBtn) prBtn.href = `${GITHUB_REPO}/upload/main/packages/keyboards`;
-        if (issueBtn) {
-            const title = `Keyboard submission: ${catalogEntry.name} (${catalogEntry.id})`;
-            const body = [
-                `**⬇️ Attach your file:** drag \`${catalogEntry.fileName}\` into this box, then click **Create**.`,
-                ``,
-                `---`,
-                ``,
-                `**Keyboard:** ${catalogEntry.name} (\`${catalogEntry.id}\`)`,
-                `**Made by:** ${catalogEntry.author}`,
-                `**About it:** ${catalogEntry.description}`,
-                ``,
-                `<!-- Checked on noky.allstudio.app · ${catalogEntry.layerCount} layer(s), ${catalogEntry.keyCount} keys · sha256 ${catalogEntry.sha256} -->`,
-            ].join("\n");
-            issueBtn.href = `${GITHUB_REPO}/issues/new?labels=package-submission&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
-        }
+        if (pkg.kind === "sample") setSubmitTarget(null, "That's a sample. Check your own .nokyboard file to submit it.");
+        else if (pkg.kind === "json") setSubmitTarget(null, "Export a .nokyboard file from Noky to submit it.");
+        else if (!catalogOk) setSubmitTarget(null, "Fix the items in the check, export again and re-check.");
+        else if (layouts.length > 1) setSubmitTarget(null, "This file holds several keyboards. Export each one on its own to submit it.");
+        else setSubmitTarget({ kind: "keyboard", id: layout.id, name: layout.name || layout.id, file: lastInspectedFile });
     }
 
     function populateInspectorWithDict(dictEntry) {
         const reportEl = document.getElementById("inspectorReport");
         const jsonEl = document.getElementById("generatedCatalogJson");
         const previewBtn = document.getElementById("previewInspectedBtn");
-        const issueBtn = document.getElementById("openGithubIssueSubmitBtn");
-        const prBtn = document.getElementById("openGithubPrBtn");
-
         if (previewBtn) previewBtn.hidden = true;
+        const code = String(dictEntry.code || "");
+        let problem = "";
+        if (!/^[a-z0-9_-]{1,32}$/.test(code)) problem = "Its code must be 1–32 lowercase letters, digits, - or _.";
+        else if ((catalog.dictionaries || []).some((d) => String(d.code).toLowerCase() === code)) problem = "A word pack with this code is already in the catalog.";
         if (reportEl) {
             reportEl.innerHTML = [
-                statusRow("ok", "check_circle", `<strong>Word pack</strong> <code>${escapeHtml(dictEntry.displayName)}</code> (<code>${escapeHtml(dictEntry.code)}</code>)`),
+                statusRow("ok", "check_circle", `<strong>Word pack</strong> <code>${escapeHtml(dictEntry.displayName)}</code> (<code>${escapeHtml(code)}</code>)`),
                 statusRow("ok", "check_circle", `<strong>Vocabulary</strong> ${Number(dictEntry.wordCount || 0).toLocaleString()} words · ${escapeHtml(dictEntry.category)}`),
-                statusRow("ok", "task_alt", "<strong>Ready to submit</strong> to the catalog."),
+                problem
+                    ? statusRow("warn", "edit_note", `<strong>Not ready yet</strong> — ${escapeHtml(problem)}`)
+                    : statusRow("ok", "task_alt", "<strong>Ready to submit</strong> to the catalog."),
             ].join("");
         }
+        if (problem) setSubmitTarget(null, "Fix the item in the check, export again and re-check.");
+        else setSubmitTarget({ kind: "dictionary", id: code, name: dictEntry.displayName || code, file: lastInspectedFile });
         if (jsonEl) jsonEl.textContent = JSON.stringify(dictEntry, null, 2);
-        if (prBtn) prBtn.href = `${GITHUB_REPO}/upload/main/packages/dictionaries`;
-        if (issueBtn) {
-            const title = `Word pack submission: ${dictEntry.displayName} (${dictEntry.code})`;
-            const body = [
-                `**⬇️ Attach your file:** drag \`${dictEntry.fileName}\` into this box, then click **Create**.`,
-                ``,
-                `---`,
-                ``,
-                `**Word pack:** ${dictEntry.displayName} — ${dictEntry.nativeName} (\`${dictEntry.code}\`)`,
-                `**Words:** ${Number(dictEntry.wordCount || 0).toLocaleString()}`,
-                ``,
-                `<!-- Checked on noky.allstudio.app · sha256 ${dictEntry.sha256 || ""} -->`,
-            ].join("\n");
-            issueBtn.href = `${GITHUB_REPO}/issues/new?labels=dictionary-submission&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+    }
+
+    // ── One-click submission (POST to the noky-stats worker, which opens the pull request) ──
+    const SUBMIT_CFG = window.NOKY_CONFIG || {};
+    const SUBMIT_API = String(SUBMIT_CFG.submitApi || "").replace(/\/+$/, "");
+    const TURNSTILE_KEY = String(SUBMIT_CFG.turnstileSiteKey || "");
+    const SUBMIT_ENABLED = Boolean(SUBMIT_API && TURNSTILE_KEY);
+    let turnstileToken = "";
+    let turnstileWidget = null;
+    let submitting = false;
+    let waitingForCheck = false; // the message currently asks the visitor to finish Turnstile
+
+    function setSubmitResult(kind, html) {
+        const el = document.getElementById("submitResult");
+        if (!el) return;
+        el.className = `submit-result${kind ? " " + kind : ""}`;
+        el.innerHTML = html;
+    }
+
+    function refreshSubmitButton() {
+        const btn = document.getElementById("submitPackageBtn");
+        if (btn) btn.disabled = !SUBMIT_ENABLED || submitting || !submitTarget || !submitTarget.file || !turnstileToken;
+    }
+
+    /** target: { kind, id, name, file } when the checked file can be submitted, else null + why. */
+    function setSubmitTarget(target, why) {
+        submitTarget = target && target.file ? target : null;
+        waitingForCheck = Boolean(SUBMIT_ENABLED && submitTarget && !turnstileToken);
+        if (!SUBMIT_ENABLED) {
+            setSubmitResult("", `One-click submission isn't open yet. Please <a href="${GITHUB_REPO}#publish-your-keyboard" target="_blank" rel="noopener noreferrer">open a pull request on GitHub</a> instead.`);
+        } else if (submitTarget) {
+            setSubmitResult("ok", `<strong>${escapeHtml(submitTarget.name)}</strong> is ready.${turnstileToken ? " Press Submit to send it." : " Complete the quick check above, then press Submit."}`);
+        } else {
+            setSubmitResult("", escapeHtml(why || "Check a file to submit it."));
         }
+        refreshSubmitButton();
+    }
+
+    function loadTurnstile() {
+        const box = document.getElementById("turnstileBox");
+        if (!SUBMIT_ENABLED || !box) return;
+        window.nokyTurnstileReady = () => {
+            turnstileWidget = window.turnstile.render(box, {
+                sitekey: TURNSTILE_KEY,
+                theme: "light",
+                size: "flexible",
+                callback: (token) => {
+                    turnstileToken = token;
+                    // Only swap the "complete the check" prompt; never hide a result or error.
+                    if (waitingForCheck && submitTarget) setSubmitTarget(submitTarget);
+                    else refreshSubmitButton();
+                },
+                "expired-callback": () => {
+                    turnstileToken = "";
+                    refreshSubmitButton();
+                },
+                "error-callback": () => {
+                    turnstileToken = "";
+                    refreshSubmitButton();
+                },
+            });
+        };
+        const script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=nokyTurnstileReady";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
+    function resetTurnstile() {
+        turnstileToken = "";
+        if (window.turnstile && turnstileWidget !== null) window.turnstile.reset(turnstileWidget);
+    }
+
+    async function submitPackage() {
+        if (!submitTarget || submitting || !turnstileToken) return;
+        const target = submitTarget;
+        const ext = target.kind === "keyboard" ? ".nokyboard" : ".nokydict";
+        const form = new FormData();
+        form.append("kind", target.kind);
+        form.append("id", target.id);
+        form.append("file", target.file, `${target.id}${ext}`);
+        form.append("turnstileToken", turnstileToken);
+        const gh = (document.getElementById("submitGithub")?.value || "").trim().replace(/^@/, "");
+        const note = (document.getElementById("submitNote")?.value || "").trim();
+        if (gh) form.append("github", gh);
+        if (note) form.append("note", note);
+
+        submitting = true;
+        waitingForCheck = false;
+        refreshSubmitButton();
+        setSubmitResult("", "Sending…");
+        try {
+            const resp = await fetch(`${SUBMIT_API}/v1/submit`, { method: "POST", body: form });
+            const out = await resp.json().catch(() => ({}));
+            if (!resp.ok || !out.ok) throw new Error(out.error || "Something went wrong. Please try again in a minute.");
+            submitTarget = null;
+            setSubmitResult(
+                "done",
+                `<strong>Submitted!</strong> It's now <a href="${escapeHtml(out.url)}" target="_blank" rel="noopener noreferrer">pull request #${Number(out.pr)}</a>. ` +
+                    `Our checks run in a minute, then we review it. Once approved it appears on the Keyboards page${gh ? `, and GitHub will notify @${escapeHtml(gh)}` : " — keep the link to follow along"}.`
+            );
+        } catch (err) {
+            setSubmitResult("err", escapeHtml(err.message || String(err)));
+        } finally {
+            submitting = false;
+            resetTurnstile();
+            refreshSubmitButton();
+        }
+    }
+
+    function initSubmitForm() {
+        const form = document.getElementById("submitPackageForm");
+        if (!form) return;
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            submitPackage();
+        });
+        if (!SUBMIT_ENABLED) document.getElementById("turnstileBox")?.remove();
+        loadTurnstile();
+        setSubmitTarget(null);
     }
 
     // ── Create section: inspector + request form ─────────────────────────────
@@ -1452,6 +1554,7 @@
     }
 
     function initInspectorAndRequestForm() {
+        initSubmitForm();
         const dropzone = document.getElementById("packageDropzone");
         const fileInput = document.getElementById("packageFileInput");
 
