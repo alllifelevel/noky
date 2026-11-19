@@ -188,6 +188,8 @@
     function statBits(kind, id) {
         if (!S.enabled) return "";
         const st = S.get(kind, id);
+        // A brand-new item showing "0 downloads" reads badly; only show counts once there are some.
+        if (!st.downloads && !st.likes && !(kind === "keyboard" && S.isLiked(id))) return "";
         const likes = kind === "keyboard" ? ` <span class="mstat${S.isLiked(id) ? " liked" : ""}"><span class="material-symbols-rounded filled">favorite</span>${S.format(st.likes)}</span>` : "";
         return ` <span class="mstat"><span class="material-symbols-rounded">download</span>${S.format(st.downloads)}</span>${likes}`;
     }
@@ -226,7 +228,7 @@
                     <div class="tile-text">
                         <h3>${escapeHtml(kbd.name)}</h3>
                         <div class="tile-meta">${escapeHtml(brandName(kbd.author))} ${verifiedMark(kbd)}</div>
-                        <div class="tile-meta">${S.enabled ? statBits("keyboard", kbd.id) : `${escapeHtml(kbd.category)} · ${formatBytes(kbd.fileSize)}`}</div>
+                        <div class="tile-meta">${statBits("keyboard", kbd.id) || `${escapeHtml(kbd.category)} · ${formatBytes(kbd.fileSize)}`}</div>
                     </div>
                     <a class="get-btn" href="${escapeHtml(kbd.downloadUrl)}" download="${escapeHtml(kbd.fileName)}" data-stop data-dl="${escapeHtml(kbd.fileName)}" data-kind="keyboard" data-id="${escapeHtml(kbd.id)}">Get</a>
                 </div>
@@ -684,7 +686,7 @@
         if (stats) {
             stats.innerHTML = [
                 [kbdEntry.keyCount ?? "—", "Keys"],
-                S.enabled && kbdEntry.downloadUrl ? [S.format(S.get("keyboard", kbdEntry.id).downloads), "Downloads"] : [kbdEntry.rowCount ?? "—", "Rows"],
+                S.enabled && kbdEntry.downloadUrl && S.get("keyboard", kbdEntry.id).downloads > 0 ? [S.format(S.get("keyboard", kbdEntry.id).downloads), "Downloads"] : [kbdEntry.rowCount ?? "—", "Rows"],
                 [layerCount, layerCount === 1 ? "Layer" : "Layers"],
                 [formatBytes(kbdEntry.fileSize), "Size"],
             ]
@@ -798,7 +800,7 @@
             const shown = buffer.replace(/\n/g, "⏎").replace(/\t/g, "⇥");
             el.classList.toggle("placeholder", !buffer);
             el.textContent = buffer ? shown : "Tap the keys below…";
-            el.scrollLeft = el.scrollWidth;
+            el.scrollLeft = buffer ? el.scrollWidth : 0;
         }
         const noteEl = document.getElementById("modalSandboxNote");
         if (noteEl) {

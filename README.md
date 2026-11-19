@@ -1,25 +1,68 @@
-# Noky Keyboard — keyboards & word packs
+<div align="center">
 
-This repository hosts **[noky.allstudio.app](https://noky.allstudio.app)**: the place to try keyboards for [Noky Keyboard](https://play.google.com/store/apps/details?id=app.allstudio.noky) live in your browser and download them, plus offline word packs.
+<img src="https://noky.allstudio.app/icon-192.png" alt="Noky Keyboard" width="96" height="96">
 
-## Submit your keyboard
+# Noky Keyboard — Keyboards & Word Packs
 
-1. In Noky, open your keyboard and tap **Export .nokyboard**.
-2. Check the file on **[noky.allstudio.app/create.html](https://noky.allstudio.app/create.html)**. It tells you right away if anything needs fixing. Your file stays on your device.
-3. Send it to us, either way works:
-   - **Pull request:** add your file to [`packages/keyboards/`](packages/keyboards) (GitHub → *Add file → Upload files*).
-   - **Issue:** use *Submit as issue* on the Create page and attach the file.
+**Custom keyboards and offline word packs for [Noky Keyboard](https://play.google.com/store/apps/details?id=app.allstudio.noky) on Android.**
+Try any keyboard live in your browser, then install it on your phone in one tap.
 
-Use an ID like `YourName-KeyboardName`. Names starting with `Noky` are reserved.
+[**Browse keyboards**](https://noky.allstudio.app/keyboards.html) ·
+[**Word packs**](https://noky.allstudio.app/word-packs.html) ·
+[**Publish yours**](https://noky.allstudio.app/create.html) ·
+[**Get the app**](https://play.google.com/store/apps/details?id=app.allstudio.noky)
 
-We review every submission. Accepted keyboards appear on the site with their own share link.
-
-## Request a layout
-
-Missing a language or layout? [Open an issue](../../issues/new?labels=layout-request) or use *Request a layout* on the Create page.
+</div>
 
 ---
 
-Please don't edit `catalog.json`, `catalog-data.js` or `key-icons.js` — they are generated when the site is published.
+## What's here
 
-© ALLStudio · [allstudio.app](https://allstudio.app)
+| | |
+| --- | --- |
+| ⌨️ **Keyboards** (`.nokyboard`) | Complete layouts with letters, symbols and a numpad, custom key shapes, colours, fonts and their own suggestion bar. Preview every one live — it looks exactly as it will on your phone. |
+| 📖 **Word packs** (`.nokydict`) | Offline dictionaries with next-word prediction for English, Spanish, French, German and Hindi, plus developer and gaming vocabularies. |
+| 🛠️ **Creator tools** | Check your own keyboard file before you share it, and submit it to the catalog. |
+
+## Install a keyboard or word pack
+
+1. Install **Noky Keyboard** from [Google Play](https://play.google.com/store/apps/details?id=app.allstudio.noky) and enable it as your keyboard.
+2. On [noky.allstudio.app](https://noky.allstudio.app), open a keyboard or word pack and tap **Get**.
+3. Open the downloaded file on your phone — Noky checks it and installs it.
+
+Want to share a keyboard with a friend? Open it on the site and tap **Share**.
+
+## Publish your keyboard
+
+Made something great in Noky's Layout Manager? Share it with everyone.
+
+1. **Export it** — in Noky, open your keyboard and tap **Export .nokyboard**.
+2. **Check it** — drop the file on the [Create page](https://noky.allstudio.app/create.html). It tells you right away if anything needs fixing, and your file never leaves your device.
+3. **Submit it**, whichever you prefer:
+   - **Pull request** — upload your file to [`packages/keyboards/`](packages/keyboards) (*Add file → Upload files*), or
+   - **Issue** — click *Submit as issue* on the Create page and attach the file.
+
+We review every submission. Accepted keyboards get their own page and share link on the site.
+
+### Before you submit
+
+- [ ] The ID looks like `YourName-KeyboardName` (letters, digits or `_`, one dash). Names starting with `Noky` are reserved.
+- [ ] The Create page shows **Ready to submit**.
+- [ ] The name and description say what makes your keyboard special.
+- [ ] It's your own work, or you have permission to share it.
+
+## Request a layout
+
+Missing a language, script or layout? [Open a request](../../issues/new?labels=layout-request&title=%5BRequest%5D+) or use **Request a layout** on the [Create page](https://noky.allstudio.app/create.html).
+
+## Feedback & support
+
+- Something not working on the site? [Open an issue](../../issues/new).
+- Questions about the app: see the [Play Store listing](https://play.google.com/store/apps/details?id=app.allstudio.noky) or email **alllifelevel@gmail.com**.
+- Privacy: [noky.allstudio.app/privacy-policy.html](https://noky.allstudio.app/privacy-policy.html)
+
+---
+
+<sub>Files such as `catalog.json`, `catalog-data.js` and `key-icons.js` are generated automatically when the site is published — please don't edit them in pull requests.</sub>
+
+<div align="center"><sub>Made by <a href="https://allstudio.app">ALLStudio</a> · © 2026 ALLStudio</sub></div>

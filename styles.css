@@ -40,7 +40,6 @@ body {
     color: var(--text);
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
 }
 body.no-scroll { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
@@ -268,7 +267,7 @@ code { font-size: 0.85em; background: rgba(139, 92, 246, 0.10); color: #5b30c9; 
 .tray.cat-other { background: linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%); }
 
 /* Keyboard grid */
-.kbd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.kbd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 18px; }
 .kbd-tile {
     background: var(--card-solid); border-radius: var(--r); padding: 12px; box-shadow: var(--sh-1);
     display: flex; flex-direction: column; gap: 12px; cursor: pointer;
@@ -289,8 +288,7 @@ code { font-size: 0.85em; background: rgba(139, 92, 246, 0.10); color: #5b30c9; 
 .empty p { color: var(--text-2); margin-bottom: 16px; }
 
 /* Dictionaries */
-.dict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
-@media (max-width: 400px) { .dict-grid { grid-template-columns: 1fr; } }
+.dict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
 .dict-tile { display: flex; align-items: center; gap: 14px; background: var(--card-solid); border-radius: var(--r); padding: 14px; box-shadow: var(--sh-1); transition: transform 180ms var(--ease), box-shadow 180ms var(--ease); }
 .dict-tile:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
 .dict-tile .squircle { width: 56px; height: 56px; border-radius: 17px; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.02em; }
@@ -645,3 +643,22 @@ code { font-size: 0.85em; background: rgba(139, 92, 246, 0.10); color: #5b30c9; 
 .not-found h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); color: var(--ink); }
 .not-found p { color: var(--text-2); font-weight: 600; max-width: 460px; }
 .not-found .hero-cta { justify-content: center; margin-top: 8px; }
+
+/* ── Phone layout safety ───────────────────────────────────────────────────
+   Grid and flex children default to "never narrower than my content", so one long
+   unbroken line (a word sample, a name) could push a card — and the whole page —
+   wider than the phone. Let them shrink, and never let the page scroll sideways. */
+html { overflow-x: clip; }
+.kbd-tile, .dict-tile, .feature-card, .feat, .card, .step, .pillar, .hl, .stat, .journey li, .faq details { min-width: 0; }
+.features, .steps, .workspace, .form-grid, .about-grid, .sheet-body, .footer-grid, .create-hero-grid, .hero-grid { min-width: 0; }
+.features > *, .steps > *, .workspace > *, .form-grid > *, .about-grid > *, .sheet-body > *, .footer-grid > *, .create-hero-grid > *, .hero-grid > * { min-width: 0; }
+code, .mono, .pkg-info dd { overflow-wrap: anywhere; }
+@media (max-width: 420px) {
+    .segmented { display: flex; width: 100%; }
+    .seg { flex: 1; padding: 0 8px; font-size: 0.84rem; }
+}
+@media (max-width: 720px) {
+    .sheet-actions { display: grid; grid-template-columns: auto 1fr 1fr; gap: 10px; width: 100%; }
+    .sheet-actions:has(> .like-btn[hidden]) { grid-template-columns: 1fr 1fr; }
+    .sheet-actions .share-wrap, .sheet-actions .share-btn, .sheet-actions > .btn { width: 100%; min-width: 0; }
+}
