@@ -1,0 +1,84 @@
+# Checks every pull request against the catalog rules and posts one comment with the result.
+#
+# Security: this runs with pull_request_target so it can comment on pull requests from forks.
+# It only checks out the trusted main branch; the submitted files are read as plain data with
+# `git show` and are never executed, installed or built.
+name: Check submission
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main (trusted scripts and current catalog)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Collect the submitted files as data
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/pr"
+          mkdir -p "$work/files"
+          gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --jq '.[] | {filename, status}' | jq -s . > "$work/changes.json"
+          git fetch --no-tags --depth=1 origin "+refs/pull/$PR/head:refs/remotes/pr/head"
+          # Only package paths are extracted; anything else is just reported by the checker.
+          jq -r '.[] | select(.status == "added") | .filename' "$work/changes.json" \
+            | grep -E '^packages/(keyboards/[A-Za-z0-9_-]{1,100}\.nokyboard|dictionaries/[a-z0-9_-]{1,32}\.nokydict)$' \
+            | while read -r path; do
+                mkdir -p "$work/files/$(dirname "$path")"
+                git show "pr/head:$path" > "$work/files/$path"
+              done || true
+
+      - name: Run the checks
+        id: check
+        run: |
+          set +e
+          python3 scripts/check_submission.py --changes "$RUNNER_TEMP/pr/changes.json" --files "$RUNNER_TEMP/pr/files" \
+            --report "$RUNNER_TEMP/pr/report.md" --summary "$RUNNER_TEMP/pr/summary.json"
+          echo "ready=$([ $? -eq 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Post the result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          READY: ${{ steps.check.outputs.ready }}
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/pr/report.md"
+          existing=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | contains("<!-- noky-submission-check -->")))][0].id // empty')
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$existing" -F body=@"$body" > /dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$body" > /dev/null
+          fi
+          gh label create "ready-for-review" --color 2da44e --description "Passed the automatic checks" --force > /dev/null || true
+          gh label create "needs-changes" --color d93f0b --description "Submission needs changes" --force > /dev/null || true
+          if [ "$READY" = "true" ]; then
+            gh pr edit "$PR" --add-label "ready-for-review" --remove-label "needs-changes" > /dev/null || true
+          else
+            gh pr edit "$PR" --add-label "needs-changes" --remove-label "ready-for-review" > /dev/null || true
+          fi
+
+      - name: Fail if changes are needed
+        if: steps.check.outputs.ready != 'true'
+        run: |
+          echo "The submission needs changes — see the comment on the pull request."
+          exit 1

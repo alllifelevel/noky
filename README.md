@@ -42,7 +42,7 @@ Made something great in Noky's Layout Manager? Share it with everyone.
    - **Pull request** — upload your file to [`packages/keyboards/`](packages/keyboards) (*Add file → Upload files*), or
    - **Issue** — click *Submit as issue* on the Create page and attach the file.
 
-We review every submission. Accepted keyboards get their own page and share link on the site.
+Within a minute, an automatic check comments on your pull request: ✅ ready for review, or a short list of what to fix. Push a fix to the same pull request and it checks again. Once a maintainer approves, your keyboard goes live with its own page and share link.
 
 ### Before you submit
 

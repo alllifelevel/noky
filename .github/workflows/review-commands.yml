@@ -1,0 +1,128 @@
+# One-word reviews. A maintainer comments on a submission pull request:
+#
+#   /approve                 re-check, merge, add to the catalog and publish the site
+#   /changes <what to fix>   ask the submitter for changes (keeps the request open)
+#   /reject <reason>         close the request with a reason
+#
+# Only the repo owner, members and collaborators can use these. The submitted files are
+# re-checked as data before merging; nothing from the pull request is ever executed.
+name: Review commands
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  command:
+    if: >-
+      github.event.issue.pull_request &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association) &&
+      (startsWith(github.event.comment.body, '/approve') || startsWith(github.event.comment.body, '/changes') || startsWith(github.event.comment.body, '/reject'))
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.merge.outputs.published }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.issue.number }}
+      BODY: ${{ github.event.comment.body }}
+      ACTOR: ${{ github.event.comment.user.login }}
+    steps:
+      - name: Acknowledge
+        run: gh api -X POST "repos/$GITHUB_REPOSITORY/issues/comments/${{ github.event.comment.id }}/reactions" -f content=eyes > /dev/null || true
+
+      - name: Ask for changes
+        if: startsWith(github.event.comment.body, '/changes')
+        run: |
+          set -euo pipefail
+          note=$(printf '%s' "$BODY" | sed -E '1s#^/changes[[:space:]]*##')
+          [ -n "$note" ] || note="Please take another look at the checklist above."
+          printf '### 🛠️ Changes requested\n\n%s\n\nPush an update to this pull request when it is ready — the checks run again automatically.\n\n<sub>Requested by @%s</sub>\n' "$note" "$ACTOR" > "$RUNNER_TEMP/msg.md"
+          gh pr comment "$PR" --body-file "$RUNNER_TEMP/msg.md"
+          gh label create "needs-changes" --color d93f0b --force > /dev/null || true
+          gh pr edit "$PR" --add-label "needs-changes" --remove-label "ready-for-review" > /dev/null || true
+
+      - name: Reject
+        if: startsWith(github.event.comment.body, '/reject')
+        run: |
+          set -euo pipefail
+          note=$(printf '%s' "$BODY" | sed -E '1s#^/reject[[:space:]]*##')
+          [ -n "$note" ] || note="This one isn't a fit for the catalog right now."
+          printf '### Thanks for your submission\n\n%s\n\nYou are welcome to submit again any time.\n' "$note" > "$RUNNER_TEMP/msg.md"
+          gh label create "declined" --color 6e7781 --force > /dev/null || true
+          gh pr edit "$PR" --add-label "declined" --remove-label "ready-for-review" > /dev/null || true
+          gh pr close "$PR" --comment "$(cat "$RUNNER_TEMP/msg.md")"
+
+      - name: Check out main
+        if: startsWith(github.event.comment.body, '/approve')
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Re-check the submission
+        if: startsWith(github.event.comment.body, '/approve')
+        id: recheck
+        run: |
+          set -uo pipefail
+          work="$RUNNER_TEMP/pr"
+          mkdir -p "$work/files"
+          gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --jq '.[] | {filename, status}' | jq -s . > "$work/changes.json"
+          git fetch --no-tags --depth=1 origin "+refs/pull/$PR/head:refs/remotes/pr/head"
+          jq -r '.[] | select(.status == "added") | .filename' "$work/changes.json" \
+            | grep -E '^packages/(keyboards/[A-Za-z0-9_-]{1,100}\.nokyboard|dictionaries/[a-z0-9_-]{1,32}\.nokydict)$' \
+            | while read -r path; do mkdir -p "$work/files/$(dirname "$path")"; git show "pr/head:$path" > "$work/files/$path"; done
+          python3 scripts/check_submission.py --changes "$work/changes.json" --files "$work/files" \
+            --report "$work/report.md" --summary "$work/summary.json" > /dev/null
+          if [ $? -ne 0 ]; then
+            printf '### ⚠️ Not merged\n\nThe automatic checks no longer pass, so this was not merged. See the latest check comment above.\n' > "$work/msg.md"
+            gh pr comment "$PR" --body-file "$work/msg.md"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+            echo "ids=$(jq -r '.ids | join(",")' "$work/summary.json")" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Merge, update the catalog and push
+        if: startsWith(github.event.comment.body, '/approve') && steps.recheck.outputs.ok == 'true'
+        id: merge
+        env:
+          IDS: ${{ steps.recheck.outputs.ids }}
+        run: |
+          set -euo pipefail
+          # Merge exactly the commit that was just re-checked, even if something was pushed since.
+          gh pr merge "$PR" --squash --subject "Add community submission (#$PR)" --match-head-commit "$(git rev-parse pr/head)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Approvals can land at the same time: always rebuild from the newest main and retry
+          # the push if another approval got there first. Each rebuild lists every package on
+          # main, so no submission is ever left out of the catalog.
+          main="${{ github.event.repository.default_branch }}"
+          for attempt in 1 2 3 4 5 6; do
+            git fetch -q origin "$main" && git reset -q --hard "origin/$main"
+            python3 scripts/update_catalog.py
+            [ -z "$(git status --porcelain catalog.json catalog-data.js)" ] && break
+            git add catalog.json catalog-data.js
+            git commit -q -m "Update catalog for #$PR"
+            git push -q origin "HEAD:$main" && break
+            echo "main moved on; retrying ($attempt)"
+            sleep $((attempt * 3))
+          done
+          links=""
+          IFS=',' read -ra arr <<< "$IDS"
+          for id in "${arr[@]}"; do [ -n "$id" ] && links="$links\n- https://noky.allstudio.app/keyboards.html?k=$id"; done
+          printf '### 🎉 Approved and published\n\nThanks for contributing! It will be live in a minute or two:%b\n\n<sub>Approved by @%s</sub>\n' "$links" "$ACTOR" > "$RUNNER_TEMP/msg.md"
+          gh pr comment "$PR" --body-file "$RUNNER_TEMP/msg.md"
+          echo "published=true" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: command
+    if: needs.command.outputs.published == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy-pages.yml

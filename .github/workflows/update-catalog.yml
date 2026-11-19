@@ -1,0 +1,55 @@
+# If packages change on main by any other route (for example a pull request merged with the
+# GitHub "Merge" button), bring catalog.json up to date and republish.
+name: Update catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-catalog
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      committed: ${{ steps.update.outputs.committed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Rebuild the catalog
+        id: update
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5 6; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python3 scripts/update_catalog.py
+            [ -z "$(git status --porcelain catalog.json catalog-data.js)" ] && break
+            git add catalog.json catalog-data.js
+            git commit -q -m "Update catalog"
+            if git push -q origin HEAD:main; then
+              echo "committed=true" >> "$GITHUB_OUTPUT"
+              break
+            fi
+            echo "main moved on; retrying ($attempt)"
+            sleep $((attempt * 3))
+          done
+
+  # A push made by this workflow doesn't start other workflows, so publish here when we committed.
+  deploy:
+    needs: update
+    if: needs.update.outputs.committed == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy-pages.yml

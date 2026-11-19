@@ -1366,7 +1366,14 @@
         layouts.forEach((l) => {
             const status = KeyboardIds.importStatus(l.id, signed);
             const [kind, icon, text] = IMPORT_OUTCOME[status];
-            const v = KeyboardIds.validateUserId(l.id);
+            let v = KeyboardIds.validateUserId(l.id);
+            // Same catalog rules as the automatic pull request check (scripts/check_submission.py).
+            if (v.ok && pkg.kind !== "sample") {
+                const ns = l.id.split("-")[0].toLowerCase();
+                const taken = (catalog.keyboards || []).some((k) => KeyboardIds.canonical(k.id).toLowerCase() === KeyboardIds.canonical(l.id).toLowerCase());
+                if (ns === "allstudio" && !signed) v = { ok: false, reason: `The ${l.id.split("-")[0]} name is used for ALLStudio's own keyboards. Please use your own name, like YourName-${l.id.split("-")[1]}.` };
+                else if (taken) v = { ok: false, reason: "A keyboard with this ID is already in the catalog. Choose a different name." };
+            }
             const fine = status === "OFFICIAL" || v.ok;
             if (!fine || kind === "err") catalogOk = false;
             const catalogNote = status === "OFFICIAL" || kind === "err" || v.ok ? "" : ` For the catalog: ${escapeHtml(v.reason)}`;
